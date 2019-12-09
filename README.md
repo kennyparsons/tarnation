@@ -59,10 +59,10 @@ where the original directory looks like this:
 ```
 
 To restore the tar.gz, follow these steps (these are unique, but have a specific purpose) 
-- Copy the tar file to the correct directory. In this case, copy it to `/root/test/` 
+- Copy the full backup tar file and the incrementals to the correct directory. In this case, copy it to `/root/test/` 
 - cd into that directory: `cd /root/test/`
-- Then "un-tar" it with `tar -xvf backupfolder.2019.12.09.15.04.41.tar.gz`
+- Then "un-tar" the tar files, in order, with `tar -xvf backupfolder.2019.12.09.15.04.41.tar.gz`
 
 Version 1.0 Limitations
-- For incremental snapshots, you'll need to copy all the tar files and then un-tar them individually. The upcoming restore script (tarnation v1.1 ) will do this automatically, but for now, manual recovery is sufficient.
+- For incremental snapshots, you'll need to copy all the tar files and then un-tar them individually, in order (starting with the most recent full backup), and referencing the snar file with the `-g` option. The upcoming restore script (tarnation v1.1 ) will do this automatically, but for now, manual recovery is sufficient.
 - Due to the way v1.0 tars the directory, it does not preserve the full path when un-tared. Therefore, tar will unpack wherever the un-tar command is run. This is why it is important to cd into the parent directory before un-taring. This will be fixed in v1.1
