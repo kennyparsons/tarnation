@@ -63,4 +63,6 @@ To restore the tar.gz, follow these steps (these are unique, but have a specific
 - cd into that directory: `cd /root/test/`
 - Then "un-tar" it with `tar -xvf backupfolder.2019.12.09.15.04.41.tar.gz`
 
-Due to the way v1.0 tars the directory, it does not preserve the full path when un-tared. Therefore, tar will unpack wherever the un-tar command is run. This is why it is important to cd into the parent directory before un-taring. The upcoming restore script will do this for you, of course. That is version 1.1, coming soon. 
+Version 1.0 Limitations
+- For incremental snapshots, you'll need to copy all the tar files and then un-tar them individually. The upcoming restore script (tarnation v1.1 ) will do this automatically, but for now, manual recovery is sufficient.
+- Due to the way v1.0 tars the directory, it does not preserve the full path when un-tared. Therefore, tar will unpack wherever the un-tar command is run. This is why it is important to cd into the parent directory before un-taring. This will be fixed in v1.1
