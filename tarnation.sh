@@ -2,7 +2,7 @@
 
 # Author: Kenny Parsons
 # Usage: Open Source
-# Example: backup.sh -d /root/test/backupfolder -b /gvault/backup/ -c /opt/scripts/backup/config/
+# Example: tarnation.sh -d /root/test -b /gvault/backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log
 
 #Functions
 backup(){
@@ -30,8 +30,13 @@ makedir(){
 	mkdir -p $@
 }
 
-logger(){
-	echo "logged"
+log(){
+	updatetime
+	echo "${timestamp}	$1	$2	$3" >> $4 2>&1
+}
+
+updatetime(){
+	timestamp=$(date +%Y.%m.%d.%H.%M.%S)
 }
 
 print_usage(){
@@ -48,15 +53,15 @@ print_usage(){
 d_flag=''
 b_flag=''
 c_flag=''
-l_flag=$PWD
+l_flag=''
 verbose='false'
 
-while getopts 'd:b:c:v' flag; do
+while getopts 'd:b:c:l:v' flag; do
         case "${flag}" in
                 d) d_flag=${OPTARG} ;;
                 b) b_flag=${OPTARG} ;;
                 c) c_flag=${OPTARG} ;;
-				l) logfile=${OPTARG} ;;
+				l) l_flag=${OPTARG} ;;
                 v) verbose='true' ;;
                 *) print_usage
                         exit 1 ;;
@@ -71,47 +76,66 @@ if [ -z "$d_flag" ] || [ -z "$b_flag" ] || [ -z "$c_flag" ]; then
 	exit 1
 fi
 
+if [ -z "$l_flag" ]; then
+	# no log specified, put them in /tmp
+	touch /tmp/${timestamp}.tarnation.log
+	l_flag=/tmp/${timestamp}.tarnation.log
+fi
+
 ###################################
 # Provided Variables
 #No trailing slash
 DIRECTORY=${d_flag%/}
 BACKUPTO=${b_flag%/}
-CONFIG=${c_flag%/} #defaults to current directory if none is specified. Will work, but best if structure is explicit.
+CONFIG=${c_flag%/}
+LOGFILE=${l_flag}
 ###################################
 
 PARENTDIR=$(dirname "$DIRECTORY")
 timestamp=$(date +%Y.%m.%d.%H.%M.%S)
 SNAR=${CONFIG}${DIRECTORY}.snar
 BASEDIR=$(basename ${DIRECTORY}/)
-TAR=${BACKUPTO}${DIRECTORY}.${timestamp}.tar.gz
-
-
+#TAR=${BACKUPTO}${DIRECTORY}.${timestamp}.tar.gz
 
 #Logic
-# First Test if SNAR Dir Exists
+log 'INFO' ${BASEDIR} ' backup started' ${LOGFILE}
+
+# Test if SNAR File Exists
+# If the SNAR does exist, we append increment to the archive name
+# If the SNAR does not exist, we append full to the archive name
+if filecheck "${SNAR}"; then
+	BACKUPTYPE='increment'
+else
+	BACKUPTYPE='full'
+fi
+
+TAR=${BACKUPTO}${DIRECTORY}.${timestamp}.${BACKUPTYPE}.tar.gz
+
+# Test if SNAR Dir Exists
 # We do not need to make the SNAR as the tar utility 
 # will create the defined tar if it does not exist. 
 # However, Tar cannnot create the parent dir.
 if dircheck "${CONFIG}${PARENTDIR}"; then
-	echo "${CONFIG}${PARENTDIR} exists"
+	log 'INFO' ${BASEDIR} '   snar directory ('${CONFIG}${PARENTDIR}') already exists' ${LOGFILE}
 else
 	makedir "${CONFIG}${PARENTDIR}"
-	echo "created snar directory at ${CONFIG}${PARENTDIR}"
+	log 'NOTE' ${BASEDIR} '   created snar directory at '${CONFIG}${PARENTDIR} ${LOGFILE}
 fi
 
 # Test if full backup dir exists (parent only, as the 
 # archive will be the actual directory in it's place).
 if dircheck "${BACKUPTO}${PARENTDIR}"; then
-	echo "${BACKUPTO}${PARENTDIR} exists" 
+	log 'INFO' ${BASEDIR} '   backup parent directory ('${BACKUPTO}${PARENTDIR}') exists' ${LOGFILE}
 else
 	makedir "${BACKUPTO}${PARENTDIR}"
-	echo "created backup parent directory at ${BACKUPTO}${PARENTDIR}"
+	log 'NOTE' ${BASEDIR} '   created backup parent directory at '${BACKUPTO}${PARENTDIR} ${LOGFILE}
 fi
 
 if backup; then
-	echo "backup completed successfully"
+	log 'INFO' ${BASEDIR} '   tar.gz completed at '${TAR} ${LOGFILE}
+	log 'INFO' ${BASEDIR} ' '${BACKUPTYPE}' backup completed successfully' ${LOGFILE}
 else
-	echo "backup exited with an error"
+	log 'ERROR' ${BASEDIR} ' '${BACKUPTYPE}' backup exited with an error' ${LOGFILE}
 fi
 
 exit 0
