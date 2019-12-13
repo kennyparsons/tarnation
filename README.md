@@ -1,13 +1,13 @@
 # Tarnation
 A simple, extensible tar backup/restore utility
 
+##### Current Version: v1.1.0
+
 ### Features
 - Uses GNU tar for a simple, clear, compressed backup 
 - Offers incremental backup using snar files
 - Easy folder structure. No need to go digging in unfamiliar directory names
-
-### Coming Soon
-- related restore script for a simple but extremely powerful restore process
+- Extremely simple restore process
 
 ### Installation
 - Clone the repository
@@ -28,7 +28,7 @@ A simple, extensible tar backup/restore utility
 
 `-v      [ ] sets the logging to verbose`
 
-\* -l and -v will be operational in v1.1 
+_\* -v will be operational in future versions_
 
 ### Example Environment
 - Script Location: `/opt/scripts/backup/tarnation.sh`
@@ -58,11 +58,15 @@ where the original directory looks like this:
     └── second.pdf
 ```
 
-To restore the tar.gz, follow these steps (these are unique, but have a specific purpose) 
-- Copy the full backup tar file and the incrementals to the correct directory. In this case, copy it to `/root/test/` 
-- cd into that directory: `cd /root/test/`
-- Then "un-tar" the tar files, in order, with `tar -xvf backupfolder.2019.12.09.15.04.41.tar.gz`
+### Restoring the backup
+Restoring the backup is extremely easy. The command syntax for the restore script is exactly the same as the backup script. Simply run the tarnation-backup.sh with the same parameters that were used to create the backup.
 
-Version 1.0 Limitations
-- For incremental snapshots, you'll need to copy all the tar files and then un-tar them individually, in order (starting with the most recent full backup), and referencing the snar file with the `-g` option. The upcoming restore script (tarnation v1.1 ) will do this automatically, but for now, manual recovery is sufficient.
-- Due to the way v1.0 tars the directory, it does not preserve the full path when un-tared. Therefore, tar will unpack wherever the un-tar command is run. This is why it is important to cd into the parent directory before un-taring. This will be fixed in v1.1
+Example:
+- Backup via 
+
+```tarnation.sh -d /root/test -b /backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log```
+- Restore via 
+
+```tarnation-restore.sh -d /root/test -b /backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log```
+
+As of v1.1.0, the target restore directory needs to be deleted. In future versions, the target directory (if existing) will be backed up for a restore point and then deleted in preparation for the restore. 
