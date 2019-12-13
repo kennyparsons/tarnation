@@ -78,6 +78,7 @@ fi
 
 if [ -z "$l_flag" ]; then
 	# no log specified, put them in /tmp
+    updatetime
 	touch /tmp/${timestamp}.tarnation.log
 	l_flag=/tmp/${timestamp}.tarnation.log
 fi
