@@ -92,6 +92,7 @@ The restore process is simplistic (and as of v1.1 quite rudimentary). It basical
 ### Roadmap Features
 - `-r` flag on the tarnation.sh script for restoring (instead of having to use a separate restore script)
 - `-v` flag to enable more verbose logging
+- Recursive backup of sub-directories, as defined by a level integer
 - Automatic removal of the target directory being restored
 - Better handling of the restore files
 - CLI GUI to select the restore point in time (currently, it will restore all tar files up the last backup)
