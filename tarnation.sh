@@ -10,6 +10,10 @@ cd $PARENTDIR
 tar -czg $SNAR -f $TAR $BASEDIR
 }
 
+restore(){
+	cat ${BACKUPTO}${DIRECTORY}* | tar -zxvf - -g /dev/null --ignore-zeros -C ${PARENTDIR}/
+}
+
 dircheck(){
 	if test -d $@; then
 		return 0
@@ -87,15 +91,23 @@ if [ -z "$l_flag" ]; then
 fi
 #Universal Declarations
 LOGFILE=${l_flag}
+DIRECTORY=${d_flag%/}
+BACKUPTO=${b_flag%/}
+CONFIG=${c_flag%/}
+PARENTDIR=$(dirname "$DIRECTORY")
+BASEDIR=$(basename ${DIRECTORY}/)
+SNAR=${CONFIG}${DIRECTORY}.snar
+
 
 
 if [[ $r_flag == "true"* ]]; then
-	RESTORE=${d_flag%/}
-	BACKUPDIR=${b_flag%/}
-	PARENTRESTORE=$(dirname "$RESTORE")
 
-	log 'INFO' 'basedir' ' restore started' ${LOGFILE}
-	cat ${BACKUPDIR}${RESTORE}* | tar -zxvf - -g /dev/null --ignore-zeros -C ${PARENTRESTORE}/
+	log 'WARN' ${BASEDIR} 'restore started' ${LOGFILE}
+	if restore; then
+		log 'INFO' ${BASEDIR} 'restore completed' ${LOGFILE}
+	else
+		log 'ERROR' ${BASEDIR} 'restore exited with an error' ${LOGFILE}
+	fi
 
 	exit 0
 fi
@@ -103,15 +115,13 @@ fi
 ###################################
 # Provided Variables
 #No trailing slash
-DIRECTORY=${d_flag%/}
-BACKUPTO=${b_flag%/}
-CONFIG=${c_flag%/}
+
+
 ###################################
 
-PARENTDIR=$(dirname "$DIRECTORY")
+
 timestamp=$(date +%Y.%m.%d.%H.%M.%S)
-SNAR=${CONFIG}${DIRECTORY}.snar
-BASEDIR=$(basename ${DIRECTORY}/)
+
 #TAR=${BACKUPTO}${DIRECTORY}.${timestamp}.tar.gz
 
 #Logic
