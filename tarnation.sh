@@ -10,10 +10,14 @@ cd $PARENTDIR
 tar -czg $SNAR -f $TAR $BASEDIR
 }
 
+restore(){
+	cat ${BACKUPTO}${DIRECTORY}* | tar -zxvf - -g /dev/null --ignore-zeros -C ${PARENTDIR}/
+}
+
 dircheck(){
 	if test -d $@; then
 		return 0
-	else 
+	else
 		return 1
 	fi
 }
@@ -46,6 +50,7 @@ print_usage(){
         echo "-b 	[*] the backup destination root directory"
         echo "-c 	[*] the config/snar definition root directory"
         echo "-l 	[ ] the log file to be used "
+				echo "-r 	[ ] puts the script in restore mode"
         echo "-v 	[ ] sets the logging to verbose"
 }
 
@@ -54,14 +59,16 @@ d_flag=''
 b_flag=''
 c_flag=''
 l_flag=''
+r_flag='false'
 verbose='false'
 
-while getopts 'd:b:c:l:v' flag; do
+while getopts 'd:b:c:l:rv' flag; do
         case "${flag}" in
                 d) d_flag=${OPTARG} ;;
                 b) b_flag=${OPTARG} ;;
                 c) c_flag=${OPTARG} ;;
-				l) l_flag=${OPTARG} ;;
+								l) l_flag=${OPTARG} ;;
+								r) r_flag='true' ;;
                 v) verbose='true' ;;
                 *) print_usage
                         exit 1 ;;
@@ -82,20 +89,39 @@ if [ -z "$l_flag" ]; then
 	touch /tmp/${timestamp}.tarnation.log
 	l_flag=/tmp/${timestamp}.tarnation.log
 fi
+#Universal Declarations
+LOGFILE=${l_flag}
+DIRECTORY=${d_flag%/}
+BACKUPTO=${b_flag%/}
+CONFIG=${c_flag%/}
+PARENTDIR=$(dirname "$DIRECTORY")
+BASEDIR=$(basename ${DIRECTORY}/)
+SNAR=${CONFIG}${DIRECTORY}.snar
+
+
+
+if [[ $r_flag == "true"* ]]; then
+
+	log 'WARN' ${BASEDIR} 'restore started' ${LOGFILE}
+	if restore; then
+		log 'INFO' ${BASEDIR} 'restore completed' ${LOGFILE}
+	else
+		log 'ERROR' ${BASEDIR} 'restore exited with an error' ${LOGFILE}
+	fi
+
+	exit 0
+fi
 
 ###################################
 # Provided Variables
 #No trailing slash
-DIRECTORY=${d_flag%/}
-BACKUPTO=${b_flag%/}
-CONFIG=${c_flag%/}
-LOGFILE=${l_flag}
+
+
 ###################################
 
-PARENTDIR=$(dirname "$DIRECTORY")
+
 timestamp=$(date +%Y.%m.%d.%H.%M.%S)
-SNAR=${CONFIG}${DIRECTORY}.snar
-BASEDIR=$(basename ${DIRECTORY}/)
+
 #TAR=${BACKUPTO}${DIRECTORY}.${timestamp}.tar.gz
 
 #Logic
@@ -113,8 +139,8 @@ fi
 TAR=${BACKUPTO}${DIRECTORY}.${timestamp}.${BACKUPTYPE}.tar.gz
 
 # Test if SNAR Dir Exists
-# We do not need to make the SNAR as the tar utility 
-# will create the defined tar if it does not exist. 
+# We do not need to make the SNAR as the tar utility
+# will create the defined tar if it does not exist.
 # However, Tar cannnot create the parent dir.
 if dircheck "${CONFIG}${PARENTDIR}"; then
 	log 'INFO' ${BASEDIR} '   snar directory ('${CONFIG}${PARENTDIR}') already exists' ${LOGFILE}
@@ -123,7 +149,7 @@ else
 	log 'NOTE' ${BASEDIR} '   created snar directory at '${CONFIG}${PARENTDIR} ${LOGFILE}
 fi
 
-# Test if full backup dir exists (parent only, as the 
+# Test if full backup dir exists (parent only, as the
 # archive will be the actual directory in it's place).
 if dircheck "${BACKUPTO}${PARENTDIR}"; then
 	log 'INFO' ${BASEDIR} '   backup parent directory ('${BACKUPTO}${PARENTDIR}') exists' ${LOGFILE}

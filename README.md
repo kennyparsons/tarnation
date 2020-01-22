@@ -1,10 +1,10 @@
 # Tarnation
 A simple, extensible tar backup/restore utility
 
-##### Current Version: v1.1.0
+##### Current Version: v1.2.0
 
 ### Features
-- Uses GNU tar for a simple, clear, compressed backup 
+- Uses GNU tar for a simple, clear, compressed backup
 - Offers incremental backup using snar files
 - Easy folder structure. No need to go digging in unfamiliar directory names
 - Extremely simple restore process
@@ -25,6 +25,8 @@ A simple, extensible tar backup/restore utility
 `-c      [*] the config/snar definition root directory`
 
 `-l      [ ] the log file to be used`
+
+`-r      [ ] puts the script in restore mode`
 
 `-v      [ ] sets the logging to verbose`
 
@@ -77,23 +79,22 @@ where the original directory looks like this:
 ```
 
 ### Restoring the backup
-Restoring the backup is extremely easy. The command syntax for the restore script is exactly the same as the backup script. Simply run the tarnation-backup.sh with the same parameters that were used to create the backup.
+Restoring the backup is extremely easy. The command syntax for the restore script is exactly the same as the backup script with an additional `-r` flag. Note, during a restore, the config snar is not used, so you can pass any variable as the `-c` flag. It just can't be missing or empty.
 
 Example:
-- Backup via 
+- Backup via
 
 ```tarnation.sh -d /root/test -b /backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log```
-- Restore via 
+- Restore via
 
-```tarnation-restore.sh -d /root/test -b /backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log```
+```tarnation.sh -r -d /root/test -b /backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log```
 
-The restore process is simplistic (and as of v1.1 quite rudimentary). It basically grabs all the tar files and unpacks them in order. This means that it will cycle through all full and incremental backups in order during the restore. Future versions will allow you skip old full backups and only restore the most recent full backup and the subsequent incremental backups, therefore drastically improving performance. Also, as of v1.1.0, the target restore directory needs to be deleted. In future versions, the target directory (if existing) will be backed up for a restore point and then deleted in preparation for the restore. 
+The restore process is simplistic (and as of v1.2, quite rudimentary). It basically grabs all the tar files and unpacks them in order. This means that it will cycle through all full and incremental backups in order during the restore. Future versions will allow you skip old full backups and only restore the most recent full backup and the subsequent incremental backups, therefore drastically improving performance. Also, as of v1.1.0, the target restore directory needs to be deleted. In future versions, the target directory (if existing) will be backed up for a restore point and then deleted in preparation for the restore.
 
 ### Roadmap Features
-- `-r` flag on the tarnation.sh script for restoring (instead of having to use a separate restore script)
 - `-v` flag to enable more verbose logging
 - Recursive backup of sub-directories, as defined by a level integer
-- Backup retention policies 
+- Backup retention policies
 - gpg optional encryption
 - Automatic removal of the target directory being restored
 - Better handling of the restore files
