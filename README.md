@@ -87,12 +87,11 @@ Example:
 ```tarnation.sh -d /root/test -b /backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log```
 - Restore via
 
-```tarnation-restore.sh -r -d /root/test -b /backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log```
+```tarnation.sh -r -d /root/test -b /backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log```
 
 The restore process is simplistic (and as of v1.2, quite rudimentary). It basically grabs all the tar files and unpacks them in order. This means that it will cycle through all full and incremental backups in order during the restore. Future versions will allow you skip old full backups and only restore the most recent full backup and the subsequent incremental backups, therefore drastically improving performance. Also, as of v1.1.0, the target restore directory needs to be deleted. In future versions, the target directory (if existing) will be backed up for a restore point and then deleted in preparation for the restore.
 
 ### Roadmap Features
-- `-r` flag on the tarnation.sh script for restoring (instead of having to use a separate restore script)
 - `-v` flag to enable more verbose logging
 - Recursive backup of sub-directories, as defined by a level integer
 - Backup retention policies
