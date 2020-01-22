@@ -26,6 +26,8 @@ A simple, extensible tar backup/restore utility
 
 `-l      [ ] the log file to be used`
 
+`-r      [ ] puts the script in restore mode`
+
 `-v      [ ] sets the logging to verbose`
 
 _\* -v will be operational in future versions_
@@ -77,7 +79,7 @@ where the original directory looks like this:
 ```
 
 ### Restoring the backup
-Restoring the backup is extremely easy. The command syntax for the restore script is exactly the same as the backup script. Simply run the tarnation-backup.sh with the same parameters that were used to create the backup.
+Restoring the backup is extremely easy. The command syntax for the restore script is exactly the same as the backup script with an additional `-r` flag. Note, during a restore, the config snar is not used, so you can pass any variable as the `-c` flag. It just can't be missing or empty.
 
 Example:
 - Backup via
@@ -85,7 +87,7 @@ Example:
 ```tarnation.sh -d /root/test -b /backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log```
 - Restore via
 
-```tarnation-restore.sh -d /root/test -b /backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log```
+```tarnation-restore.sh -r -d /root/test -b /backup/ -c /opt/scripts/backup/config/ -l /opt/scripts/backup/tarnation.log```
 
 The restore process is simplistic (and as of v1.1 quite rudimentary). It basically grabs all the tar files and unpacks them in order. This means that it will cycle through all full and incremental backups in order during the restore. Future versions will allow you skip old full backups and only restore the most recent full backup and the subsequent incremental backups, therefore drastically improving performance. Also, as of v1.1.0, the target restore directory needs to be deleted. In future versions, the target directory (if existing) will be backed up for a restore point and then deleted in preparation for the restore.
 
