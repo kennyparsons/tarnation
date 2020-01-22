@@ -1,7 +1,7 @@
 # Tarnation
 A simple, extensible tar backup/restore utility
 
-##### Current Version: v1.1.0
+##### Current Version: v1.2.0
 
 ### Features
 - Uses GNU tar for a simple, clear, compressed backup
