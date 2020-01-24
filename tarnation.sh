@@ -12,10 +12,8 @@ tar -czg $SNAR -f $TAR $BASEDIR
 
 recursivebackup(){
 	cd $PARENTDIR
-	ls
-	echo "starting find and tar"
-	find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "echo ${CONFIG}" \;
-	#find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c 'tar -czg ${CONFIG}${DIRECTORY}/$(basename {}).snar -f ${BACKUPTO}${DIRECTORY}/$(basename {}).tar.gz $(basename {})' \;
+	#find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "echo ${CONFIG}" \;
+	find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "tar -czg ${CONFIG}${DIRECTORY}/$(basename {}).snar -f ${BACKUPTO}${DIRECTORY}/$(basename {}).tar.gz $(basename {})" \;
 }
 
 restore(){
