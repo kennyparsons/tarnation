@@ -119,7 +119,11 @@ if [[ $r_flag == "true"* ]]; then
 fi
 
 ###### Testing
-#recursivebackup
+if recursivebackup; then
+	echo recursive
+else
+	echo no recursive
+fi
 #exit 0
 #####
 
