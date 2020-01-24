@@ -9,6 +9,7 @@ backup(){
 cd $PARENTDIR
 tar -czg $SNAR -f $TAR $BASEDIR
 }
+
 recursivebackup(){
 	cd $PARENTDIR
 
@@ -118,8 +119,8 @@ if [[ $r_flag == "true"* ]]; then
 fi
 
 ###### Testing
-recursivebackup
-exit 0
+#recursivebackup
+#exit 0
 #####
 
 
