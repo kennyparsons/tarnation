@@ -12,7 +12,7 @@ tar -czg $SNAR -f $TAR $BASEDIR
 
 recursivebackup(){
 	cd $PARENTDIR
-
+	echo "starting find"
 	find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c 'tar -czg ${CONFIG}${DIRECTORY}/$(basename {}).snar -f ${BACKUPTO}${DIRECTORY}/$(basename {}).tar.gz $(basename {})' \;
 }
 
@@ -119,12 +119,13 @@ if [[ $r_flag == "true"* ]]; then
 fi
 
 ###### Testing
+echo "starting recursive"
 if recursivebackup; then
 	echo recursive
 else
 	echo no recursive
 fi
-#exit 0
+exit 0
 #####
 
 
