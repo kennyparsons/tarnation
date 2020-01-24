@@ -11,9 +11,15 @@ tar -czg $SNAR -f $TAR $BASEDIR
 }
 
 recursivebackup(){
-	cd $PARENTDIR
-	#find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "echo ${CONFIG}" \;
-	find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "tar -czg ${CONFIG}${DIRECTORY}/$(basename {}).snar -f ${BACKUPTO}${DIRECTORY}/$(basename {}).tar.gz $(basename {})" \;
+	cd $DIRECTORY
+	echo "config snar"
+	find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "echo ${CONFIG}${DIRECTORY}/$(basename {}).snar" \;
+	echo "target tar"
+	find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "echo ${BACKUPTO}${DIRECTORY}/$(basename {}).tar.gz" \;
+	echo "backing up these"
+	find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "echo $(basename {})" \;
+
+	#find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "tar -czg ${CONFIG}${DIRECTORY}/$(basename {}).snar -f ${BACKUPTO}${DIRECTORY}/$(basename {}).tar.gz $(basename {})" \;
 }
 
 restore(){
@@ -121,9 +127,9 @@ fi
 ###### Testing
 echo "starting recursive"
 if recursivebackup; then
-	echo recursive
+	echo "recursive success"
 else
-	echo no recursive
+	echo "recursive failed"
 fi
 exit 0
 #####
