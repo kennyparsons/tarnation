@@ -17,7 +17,7 @@ recursivebackup(){
 	echo "target tar"
 	find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "echo ${BACKUPTO}${DIRECTORY}/$(basename {}).tar.gz" \;
 	echo "backing up these"
-	find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "echo $(basename {})" \;
+	find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c 'echo '$(basename {}) \;
 
 	#find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c "tar -czg ${CONFIG}${DIRECTORY}/$(basename {}).snar -f ${BACKUPTO}${DIRECTORY}/$(basename {}).tar.gz $(basename {})" \;
 }
