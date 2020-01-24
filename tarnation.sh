@@ -9,6 +9,11 @@ backup(){
 cd $PARENTDIR
 tar -czg $SNAR -f $TAR $BASEDIR
 }
+recursivebackup(){
+	cd $PARENTDIR
+
+	find . -maxdepth 1 -mindepth 1 -type d -prune -exec sh -c 'tar -czg ${CONFIG}${DIRECTORY}/$(basename {}).snar -f ${BACKUPTO}${DIRECTORY}/$(basename {}).tar.gz $(basename {})' \;
+}
 
 restore(){
 	cat ${BACKUPTO}${DIRECTORY}* | tar -zxvf - -g /dev/null --ignore-zeros -C ${PARENTDIR}/
@@ -112,12 +117,10 @@ if [[ $r_flag == "true"* ]]; then
 	exit 0
 fi
 
-###################################
-# Provided Variables
-#No trailing slash
-
-
-###################################
+###### Testing
+recursivebackup
+exit 0
+#####
 
 
 timestamp=$(date +%Y.%m.%d.%H.%M.%S)
