@@ -18,7 +18,7 @@ A simple, extensible tar backup/restore utility
 ### Command Options
 `* indicates a required option`
 
-`-d      [*] the directory being backed up`
+`-d      [*] the directory candidate being backed up`
 
 `-b      [*] the backup destination root directory`
 
@@ -28,12 +28,14 @@ A simple, extensible tar backup/restore utility
 
 `-r      [ ] puts the script in restore mode`
 
+`-s      [*] *integer* how many levels deep to consider a directory a tar candidate`
+
 `-v      [ ] sets the logging to verbose`
 
 _\* -v will be operational in future versions_
 
 ### General Usage
-Tarnation will make a single tar backup of the directory specified. It does not recursively back up individual sub directories. It simply makes a snapshot backup of the directory specified. To put it in perspective, you should not backup `/home/` if you have several directories inside `/home/` that you want to back up with tar versions. Instead it's recommended that you use tarnation on the specific directories you need to back up. For example, I store all my docker configurations inside of `/root/docker/`. The directory looks like this:
+Tarnation will make a single tar backup of the directory specified. Although it does include subdirectories and folders, it simply makes a snapshot backup of the entire directory specified. To put it in perspective, you should not backup `/home/` if you have several directories inside `/home/` that you want to back up with tar versions. Instead it's recommended that you use tarnation on the specific directories you need to back up. For example, I store all my docker configurations inside of `/root/docker/`. The directory looks like this:
 ```bash
 /root/docker/
 ├── filebrowser/
@@ -48,7 +50,7 @@ Tarnation will make a single tar backup of the directory specified. It does not 
 ├── syncarr/
 └── tautulli/
 ```
-Best practice would be to backup all the directories inside of `/root/docker/` instead of only backing up `/root/docker/`. **Future versions will accept a directory and a flag that will recursively handle all sub-directories as if they were individually backed up.**
+v1.3 introduced the `-s int` flag.  The integer is how many levels deep do you want to go to consider a directory a tar candidate. This means tarnation will recursively handle all sub-directories as if they were individually backed up. Currently only -`s 0` and `1` are supported. `0` means tarnation will not try to individually tar subdirectories and it will just tar the main directory (which also includes subdirs).
 
 ### Example Environment
 - Script Location: `/opt/scripts/backup/tarnation.sh`
