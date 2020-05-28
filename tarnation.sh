@@ -67,8 +67,8 @@ while getopts 'd:b:c:l:rv' flag; do
                 d) d_flag=${OPTARG} ;;
                 b) b_flag=${OPTARG} ;;
                 c) c_flag=${OPTARG} ;;
-								l) l_flag=${OPTARG} ;;
-								r) r_flag='true' ;;
+                l) l_flag=${OPTARG} ;;
+                r) r_flag='true' ;;
                 v) verbose='true' ;;
                 *) print_usage
                         exit 1 ;;
